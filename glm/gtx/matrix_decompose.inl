@@ -23,6 +23,38 @@ namespace detail
 	{
 		return v * desiredLength / length(v);
 	}
+
+	/// Resolves the sign of every scale axis of an equivalent decomposition.
+	///
+	/// A decomposition has several equivalent variants that only differ by the
+	/// sign of each scale axis, as long as the product of the signs keeps the
+	/// determinant of the matrix.
+	template<typename T, qualifier Q>
+	GLM_FUNC_QUALIFIER vec<3, T, Q> resolveScaleSigns(
+		vec<3, T, Q> const& magnitudes,
+		T determinantSign,
+		vec<3, T, Q> const& referenceScale)
+	{
+		vec<3, T, Q> referenceSigns(
+			referenceScale.x < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1),
+			referenceScale.y < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1),
+			referenceScale.z < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1));
+
+		if(referenceSigns.x * referenceSigns.y * referenceSigns.z * determinantSign > static_cast<T>(0))
+			return referenceSigns;
+
+		// The reference handedness differs from the current one, which means the
+		// transform passed through a degenerate (singular) point and the three
+		// reference signs cannot all be kept. Preserve the two axes that carry the
+		// most geometry and flip the smallest one to match the determinant.
+		length_t smallest = 0;
+		if(magnitudes.y < magnitudes[smallest])
+			smallest = 1;
+		if(magnitudes.z < magnitudes[smallest])
+			smallest = 2;
+		referenceSigns[smallest] = -referenceSigns[smallest];
+		return referenceSigns;
+	}
 }//namespace detail
 
 	// Matrix decompose
@@ -230,5 +262,70 @@ namespace detail
 		m *= glm::scale(scale);
 
 		return m;
+	}
+
+	// Matrix decompose with a previous frame used as a continuity reference.
+	//
+	// The decomposition produced by the historical entry point is unique once a
+	// sign convention is chosen for the scale axes: every axis sign can be
+	// flipped as long as the product of the three signs keeps matching the
+	// determinant of the matrix. For mirrored (negative determinant) transforms
+	// the historical entry point always picks the all-negative convention, which
+	// makes the scale and rotation channels jump whenever the matrix crosses a
+	// reflection. This overload keeps the signs of the reference frame whenever
+	// the matrix has the same handedness, and returns the rotation in the
+	// reference quaternion hemisphere, so animated channels stay continuous.
+	template <typename T, qualifier Q>
+	GLM_FUNC_QUALIFIER bool decompose(
+		mat<4, 4, T, Q> const& ModelMatrix,
+		vec<3, T, Q> & Scale, qua<T, Q> & Orientation, vec<3, T, Q> & Translation,
+		vec<3, T, Q> & Skew, vec<4, T, Q> & Perspective,
+		vec<3, T, Q> const& ReferenceScale, qua<T, Q> const& ReferenceOrientation)
+	{
+		if(!decompose(ModelMatrix, Scale, Orientation, Translation, Skew, Perspective))
+			return false;
+
+		// Sign of the determinant of the linear part. Every Scale component is
+		// non-zero here because a singular matrix is rejected above.
+		T const determinantSign = Scale.x * Scale.y * Scale.z < static_cast<T>(0)
+			? static_cast<T>(-1)
+			: static_cast<T>(1);
+
+		vec<3, T, Q> const magnitudes(glm::abs(Scale));
+		vec<3, T, Q> const targetSigns = detail::resolveScaleSigns(magnitudes, determinantSign, ReferenceScale);
+
+		// Ratio between the target signs and the signs chosen by the historical
+		// entry point. Flipping a scale axis is equivalent to flipping the
+		// corresponding column of the rotation, so the rotation and the shear
+		// factors have to be compensated to keep recompose() reproducing the
+		// original matrix.
+		vec<3, T, Q> const flips(
+			(Scale.x < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1)) * targetSigns.x,
+			(Scale.y < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1)) * targetSigns.y,
+			(Scale.z < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1)) * targetSigns.z);
+
+		Scale = magnitudes * targetSigns;
+
+		// Each shear factor pairs the two other axes, so it is multiplied by the
+		// product of their flips (the flips are +-1, so dividing is the same).
+		Skew = vec<3, T, Q>(
+			Skew.x / (flips.y * flips.z),
+			Skew.y / (flips.x * flips.z),
+			Skew.z / (flips.x * flips.y));
+
+		mat<3, 3, T, Q> Rotation = mat3_cast(Orientation);
+		Rotation[0] *= flips.x;
+		Rotation[1] *= flips.y;
+		Rotation[2] *= flips.z;
+
+		Orientation = quat_cast(Rotation);
+
+		// Quaternions are a double cover of rotations: q and -q are the same
+		// rotation. Pick the hemisphere of the reference frame so that the
+		// rotation channels remain continuous across the trace branch boundary.
+		if(dot(Orientation, ReferenceOrientation) < static_cast<T>(0))
+			Orientation = -Orientation;
+
+		return true;
 	}
 }//namespace glm
