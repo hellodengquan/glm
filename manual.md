@@ -1511,6 +1511,8 @@ Integer matrix types similar to the core floating-point matrices.  Some operatio
 
 Additional matrix inverse functions.
 
+`tryInverse` computes an inverse that explicitly reports failure. It returns `false` and leaves the caller supplied result untouched when the matrix is singular or ill-conditioned, instead of silently producing infinities or NaNs like `inverse`. On success the forward and inverse transforms round-trip to identity within a caller supplied relative error tolerance. The invertibility decision is scale invariant, so changing scene length units does not change whether a transform is considered invertible.
+
 `<glm/gtc/matrix_inverse.hpp>` need to be included to use these features.
 
 ### <a name="section4_9"></a> 4.9. GLM\_GTC\_matrix\_transform
