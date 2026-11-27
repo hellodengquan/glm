@@ -104,6 +104,11 @@ target_link_libraries(main PRIVATE glm::glm)
 
 ## Release notes
 
+### Unreleased
+
+#### Features:
+- Added reverse depth perspective and frustum projection functions (`perspectiveRH_ZO_REV`, `perspectiveLH_NO_REV`, `frustumRH_ZO_REV`, `perspectiveFovRH_ZO_REV`, etc.) for reverse depth buffers
+
 ### [GLM 1.0.3](https://github.com/g-truc/glm/releases/tag/1.0.3) - 2025-12-31
 
 #### Fixes:

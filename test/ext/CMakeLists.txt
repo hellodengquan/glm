@@ -1,3 +1,4 @@
+glmCreateTestGTC(ext_matrix_clip_space)
 glmCreateTestGTC(ext_matrix_relational)
 glmCreateTestGTC(ext_matrix_transform)
 glmCreateTestGTC(ext_matrix_common)

@@ -211,6 +211,85 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustum(
 		T left, T right, T bottom, T top, T near, T far);
 
+	/// Creates a left-handed frustum matrix with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumLH_ZO_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a left-handed frustum matrix with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumLH_NO_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a right-handed frustum matrix with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumRH_ZO_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a right-handed frustum matrix with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumRH_NO_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a frustum matrix with a reverse depth mapping using left-handed coordinates if GLM_FORCE_LEFT_HANDED is defined or right-handed coordinates otherwise.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumZO_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a frustum matrix with a reverse depth mapping using left-handed coordinates if GLM_FORCE_LEFT_HANDED is defined or right-handed coordinates otherwise.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumNO_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a left-handed frustum matrix with a reverse depth mapping.
+	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near clipping plane maps to +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// Otherwise, the near clipping plane maps to +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumLH_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a right-handed frustum matrix with a reverse depth mapping.
+	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near clipping plane maps to +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// Otherwise, the near clipping plane maps to +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumRH_REV(
+		T left, T right, T bottom, T top, T near, T far);
+
+	/// Creates a frustum matrix with a reverse depth mapping, using the default handedness and the default near and far clip planes definition.
+	/// The near clipping plane maps to the largest z normalized device coordinate and the far clipping plane to the smallest one.
+	/// To change default handedness use GLM_FORCE_LEFT_HANDED. To change default near and far clip planes definition use GLM_FORCE_DEPTH_ZERO_TO_ONE.
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> frustumREV(
+		T left, T right, T bottom, T top, T near, T far);
+
 
 	/// Creates a matrix for a right-handed, symmetric perspective-view frustum.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
@@ -330,6 +409,130 @@ namespace glm
 	/// @see <a href="https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml">gluPerspective man page</a>
 	template<typename T>
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspective(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a right-handed, symmetric perspective-view frustum with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveRH_ZO_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a right-handed, symmetric perspective-view frustum with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveRH_NO_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a left-handed, symmetric perspective-view frustum with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveLH_ZO_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a left-handed, symmetric perspective-view frustum with a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveLH_NO_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a symmetric perspective-view frustum with a reverse depth mapping using left-handed coordinates if GLM_FORCE_LEFT_HANDED is defined or right-handed coordinates otherwise.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveZO_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a symmetric perspective-view frustum with a reverse depth mapping using left-handed coordinates if GLM_FORCE_LEFT_HANDED is defined or right-handed coordinates otherwise.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveNO_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a right-handed, symmetric perspective-view frustum with a reverse depth mapping.
+	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near clipping plane maps to +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// Otherwise, the near clipping plane maps to +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveRH_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a left-handed, symmetric perspective-view frustum with a reverse depth mapping.
+	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near clipping plane maps to +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// Otherwise, the near clipping plane maps to +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveLH_REV(
+		T fovy, T aspect, T near, T far);
+
+	/// Creates a matrix for a symmetric perspective-view frustum with a reverse depth mapping, using the default handedness and the default near and far clip planes definition.
+	/// The near clipping plane maps to the largest z normalized device coordinate and the far clipping plane to the smallest one.
+	/// To change default handedness use GLM_FORCE_LEFT_HANDED. To change default near and far clip planes definition use GLM_FORCE_DEPTH_ZERO_TO_ONE.
+	///
+	/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveREV(
 		T fovy, T aspect, T near, T far);
 
 	/// Builds a perspective projection matrix based on a field of view using right-handed coordinates.
@@ -458,6 +661,139 @@ namespace glm
 	/// @tparam T A floating-point scalar type
 	template<typename T>
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFov(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a right-handed perspective projection matrix based on a field of view and a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovRH_ZO_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a right-handed perspective projection matrix based on a field of view and a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovRH_NO_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a left-handed perspective projection matrix based on a field of view and a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovLH_ZO_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a left-handed perspective projection matrix based on a field of view and a reverse depth mapping.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	/// The near and far distances are still expressed as physical, positive distances from the viewer.
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovLH_NO_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a perspective projection matrix based on a field of view and a reverse depth mapping using left-handed coordinates if GLM_FORCE_LEFT_HANDED is defined or right-handed coordinates otherwise.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovZO_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a perspective projection matrix based on a field of view and a reverse depth mapping using left-handed coordinates if GLM_FORCE_LEFT_HANDED is defined or right-handed coordinates otherwise.
+	/// The near clipping plane maps to z normalized device coordinates of +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovNO_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a right-handed perspective projection matrix based on a field of view and a reverse depth mapping.
+	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near clipping plane maps to +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// Otherwise, the near clipping plane maps to +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovRH_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a left-handed perspective projection matrix based on a field of view and a reverse depth mapping.
+	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near clipping plane maps to +1 and the far clipping plane to 0. (Direct3D reverse depth clip volume definition)
+	/// Otherwise, the near clipping plane maps to +1 and the far clipping plane to -1. (OpenGL reverse depth clip volume definition)
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovLH_REV(
+		T fov, T width, T height, T near, T far);
+
+	/// Builds a perspective projection matrix based on a field of view and a reverse depth mapping, using the default handedness and the default near and far clip planes definition.
+	/// The near clipping plane maps to the largest z normalized device coordinate and the far clipping plane to the smallest one.
+	/// To change default handedness use GLM_FORCE_LEFT_HANDED. To change default near and far clip planes definition use GLM_FORCE_DEPTH_ZERO_TO_ONE.
+	///
+	/// @param fov Expressed in radians.
+	/// @param width Width of the viewport
+	/// @param height Height of the viewport
+	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+	///
+	/// @tparam T A floating-point scalar type
+	template<typename T>
+	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovREV(
 		T fov, T width, T height, T near, T far);
 
 	/// Creates a matrix for a left-handed, symmetric perspective-view frustum with far plane at infinite.

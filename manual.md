@@ -1366,6 +1366,8 @@ glm::mat4 computeProjection(float Width, float Height)
 
 Include `<glm/ext/matrix_clip_space.hpp>` to use these features.
 
+The `perspective*_REV`, `perspectiveFov*_REV` and `frustum*_REV` functions build the same frusta with a reverse depth mapping, where the near clipping plane receives the largest depth value and the far clipping plane the smallest. This lets a renderer use a single camera with a reverse depth buffer. The near and far distances are still expressed as physical, positive distances from the viewer, and the `*_ZO_REV` and `*_NO_REV` variants keep the endpoint conventions of their zero-to-one and negative-one-to-one clip spaces respectively. The original functions keep their forward depth mapping.
+
 #### 3.8.4. GLM_EXT_matrix_projection
 
 This extension exposes functions to map object coordinates into window coordinates and reverse.
