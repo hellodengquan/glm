@@ -65,12 +65,12 @@ struct compute_vec_div<L, T, Q, true> : public compute_vec_div<L, T, Q, false>
 #if GLM_ARCH & GLM_ARCH_SSE2_BIT
 
 #	if GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
-	template<length_t L, qualifier Q, int E0, int E1, int E2, int E3>
-	struct _swizzle_base1<L, float, Q, E0,E1,E2,E3, true> : public _swizzle_base0<float, L>
+	template<length_t L, qualifier Q, int E0, int E1, int E2, int E3, int H>
+	struct _swizzle_base1<L, float, Q, E0,E1,E2,E3, true, H> : public _swizzle_base0<float, H>
 	{
 		GLM_FUNC_QUALIFIER vec<L, float, Q> operator ()()  const
 		{
-			__m128 data = *reinterpret_cast<__m128 const*>(&this->_buffer);
+			__m128 data = *reinterpret_cast<__m128 const*>(this->_buffer);
 
 			vec<L, float, Q> Result;
 #			if GLM_ARCH & GLM_ARCH_AVX_BIT
@@ -82,18 +82,18 @@ struct compute_vec_div<L, T, Q, true> : public compute_vec_div<L, T, Q, false>
 		}
 	};
 
-	template<qualifier Q, int E0, int E1, int E2, int E3>
-	struct _swizzle_base1<2, float, Q, E0, E1, E2, E3, true> : public _swizzle_base1<2, float, Q, E0, E1, E2, E3, false> {};
+	template<qualifier Q, int E0, int E1, int E2, int E3, int H>
+	struct _swizzle_base1<2, float, Q, E0, E1, E2, E3, true, H> : public _swizzle_base1<2, float, Q, E0, E1, E2, E3, false, H> {};
 
-	template<qualifier Q, int E0, int E1, int E2, int E3>
-	struct _swizzle_base1<2, int, Q, E0, E1, E2, E3, true> : public _swizzle_base1<2, int, Q, E0, E1, E2, E3, false> {};
+	template<qualifier Q, int E0, int E1, int E2, int E3, int H>
+	struct _swizzle_base1<2, int, Q, E0, E1, E2, E3, true, H> : public _swizzle_base1<2, int, Q, E0, E1, E2, E3, false, H> {};
 
-	template<length_t L, qualifier Q, int E0, int E1, int E2, int E3>
-	struct _swizzle_base1<L, int, Q, E0,E1,E2,E3, true> : public _swizzle_base0<int, L>
+	template<length_t L, qualifier Q, int E0, int E1, int E2, int E3, int H>
+	struct _swizzle_base1<L, int, Q, E0,E1,E2,E3, true, H> : public _swizzle_base0<int, H>
 	{
 		GLM_FUNC_QUALIFIER vec<L, int, Q> operator ()()  const
 		{
-			__m128i data = *reinterpret_cast<__m128i const*>(&this->_buffer);
+			__m128i data = *reinterpret_cast<__m128i const*>(this->_buffer);
 
 			vec<L, int, Q> Result;
 			Result.data = _mm_shuffle_epi32(data, _MM_SHUFFLE(E3, E2, E1, E0));
@@ -101,12 +101,12 @@ struct compute_vec_div<L, T, Q, true> : public compute_vec_div<L, T, Q, false>
 		}
 	};
 
-	template<length_t L, qualifier Q, int E0, int E1, int E2, int E3>
-	struct _swizzle_base1<L, uint, Q, E0,E1,E2,E3, true> : public _swizzle_base0<uint, L>
+	template<length_t L, qualifier Q, int E0, int E1, int E2, int E3, int H>
+	struct _swizzle_base1<L, uint, Q, E0,E1,E2,E3, true, H> : public _swizzle_base0<uint, H>
 	{
 		GLM_FUNC_QUALIFIER vec<L, uint, Q> operator ()()  const
 		{
-			__m128i data = *reinterpret_cast<__m128i const*>(&this->_buffer);
+			__m128i data = *reinterpret_cast<__m128i const*>(this->_buffer);
 
 			vec<L, uint, Q> Result;
 			Result.data = _mm_shuffle_epi32(data, _MM_SHUFFLE(E3, E2, E1, E0));
@@ -718,14 +718,14 @@ struct compute_vec_div<L, T, Q, true> : public compute_vec_div<L, T, Q, false>
 #if GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
 // the functions below needs to be properly implemented, use unoptimized function fro now.
 
-template<length_t L, qualifier Q, int E0, int E1, int E2, int E3>
-struct _swizzle_base1<L, float, Q, E0, E1, E2, E3, true> : public _swizzle_base1<L, float, Q, E0, E1, E2, E3, false>{}; 
+template<length_t L, qualifier Q, int E0, int E1, int E2, int E3, int H>
+struct _swizzle_base1<L, float, Q, E0, E1, E2, E3, true, H> : public _swizzle_base1<L, float, Q, E0, E1, E2, E3, false, H>{};
 
-template<length_t L, qualifier Q, int E0, int E1, int E2, int E3>
-struct _swizzle_base1<L, int, Q, E0, E1, E2, E3, true> : public _swizzle_base1<L, int, Q, E0, E1, E2, E3, false> {};
+template<length_t L, qualifier Q, int E0, int E1, int E2, int E3, int H>
+struct _swizzle_base1<L, int, Q, E0, E1, E2, E3, true, H> : public _swizzle_base1<L, int, Q, E0, E1, E2, E3, false, H> {};
 
-template<length_t L, qualifier Q, int E0, int E1, int E2, int E3>
-struct _swizzle_base1<L, uint, Q, E0, E1, E2, E3, true> : public _swizzle_base1<L, uint, Q, E0, E1, E2, E3, false> {};
+template<length_t L, qualifier Q, int E0, int E1, int E2, int E3, int H>
+struct _swizzle_base1<L, uint, Q, E0, E1, E2, E3, true, H> : public _swizzle_base1<L, uint, Q, E0, E1, E2, E3, false, H> {};
 
 #	endif// GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
 

@@ -672,6 +672,8 @@ void foo()
 
 *Note: The implementation has a caveat: Swizzle operator types must be different on both size of the equal operator or the operation will fail. There is no known fix for this issue to date.*
 
+*Note: The swizzle backing storage is typed and sized after the host vector, so the swizzle accessors and assignment operators are `constexpr` eligible. A writable swizzle snapshots its source before applying the permutation, hence every target component of a single assignment observes the same source color and self swizzles such as `v.yx = v.xy` are well defined. Swizzles with repeated components stay read-only. Because the l-value swizzle operators rely on anonymous union members, accessing those named union members directly inside a constant expression is still governed by the language rules for union active members; the function swizzles (e.g. `v.wzyx()`) and the typed swizzle storage are fully usable in constant expressions.*
+
 ### <a name="section2_15"></a> 2.15. GLM\_FORCE\_XYZW\_ONLY: Only exposes x, y, z and w components
 
 Following GLSL specifications, GLM supports three sets of components to access vector types member: x, y, z, w; r, g, b, a; and s, t, p, q.

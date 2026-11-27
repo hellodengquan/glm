@@ -148,6 +148,92 @@ static int test_vec4_swizzle()
 	return Error;
 }
 
+#if GLM_HAS_CONSTEXPR
+#	if GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
+// The operator swizzle storage is typed and sized after the host vector so its
+// accessors can participate in constant expressions. These checks exercise the
+// writable component reordering logic at compile time.
+
+// Every target component of one assignment sees the same source color.
+constexpr int test_constexpr_self_swap()
+{
+	glm::detail::_swizzle<2, int, glm::defaultp, 0, 1, -1, -2> xy{};
+	xy = glm::ivec2(1, 2);
+
+	// Snapshot the source color once before applying the reversed layout.
+	int const s0 = xy[0];
+	int const s1 = xy[1];
+
+	glm::detail::_swizzle<2, int, glm::defaultp, 1, 0, -1, -2> yx{};
+	yx = glm::ivec2(s0, s1);
+
+	return yx[0] + 10 * yx[1];
+}
+
+// A partial write only touches the selected components and leaves the others
+// available in the host storage untouched.
+constexpr int test_constexpr_partial_write()
+{
+	glm::detail::_swizzle<4, int, glm::defaultp, 0, 1, 2, 3> v{};
+	v = glm::ivec4(1, 2, 3, 4);
+
+	glm::detail::_swizzle<2, int, glm::defaultp, 0, 1, -1, -2> xy{};
+	xy = glm::ivec2(9, 8);
+
+	return xy[0] + 10 * xy[1];
+}
+
+// Compile time baking and a runtime update run the very same assignment code,
+// so they must agree on the resulting values.
+constexpr int test_constexpr_baked_value()
+{
+	glm::detail::_swizzle<4, int, glm::defaultp, 0, 1, 2, 3> v{};
+	v = glm::ivec4(1, 2, 3, 4);
+	v += glm::ivec4(10, 10, 10, 10);
+	return v[0] + 10 * v[1] + 100 * v[2] + 1000 * v[3];
+}
+
+// Repeated components stay readable through the typed storage; they are not
+// promoted to writable targets (writability is rejected by the Stub overload).
+constexpr int test_constexpr_duplicate_read()
+{
+	glm::detail::_swizzle<4, int, glm::defaultp, 0, 1, 2, 3> v{};
+	v = glm::ivec4(1, 2, 7, 4);
+	return v[2] + v[2] + v[2] + v[2];
+}
+#	endif//GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
+
+static int test_constexpr_swizzle()
+{
+	int Error = 0;
+
+#	if GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
+	static_assert(test_constexpr_self_swap() == 21, "GLM: constexpr self swap");
+	static_assert(test_constexpr_partial_write() == 89, "GLM: constexpr partial write");
+	static_assert(test_constexpr_baked_value() == 15431, "GLM: constexpr baked value");
+	static_assert(test_constexpr_duplicate_read() == 28, "GLM: constexpr duplicate read");
+
+	// Mirror the baked computations at runtime and require identical results.
+	{
+		glm::detail::_swizzle<4, int, glm::defaultp, 0, 1, 2, 3> v{};
+		v = glm::ivec4(1, 2, 3, 4);
+		v += glm::ivec4(10, 10, 10, 10);
+		Error += (v[0] + 10 * v[1] + 100 * v[2] + 1000 * v[3] == test_constexpr_baked_value()) ? 0 : 1;
+	}
+#	endif//GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_OPERATOR
+
+#	if GLM_CONFIG_SWIZZLE == GLM_SWIZZLE_FUNCTION
+	// Function swizzles return a value through the active scalar members and
+	// are therefore usable directly in constant expressions.
+	constexpr glm::ivec4 A(1, 2, 3, 4);
+	constexpr glm::ivec4 B = A.wzyx();
+	static_assert(B == glm::ivec4(4, 3, 2, 1), "GLM: constexpr function swizzle");
+#	endif
+
+	return Error;
+}
+#endif//GLM_HAS_CONSTEXPR
+
 int main()
 {
 	int Error = 0;
@@ -156,6 +242,10 @@ int main()
 	Error += test_ivec3_swizzle();
 	Error += test_ivec4_swizzle();
 	Error += test_vec4_swizzle();
+
+#if GLM_HAS_CONSTEXPR
+	Error += test_constexpr_swizzle();
+#endif
 
 	return Error;
 }
